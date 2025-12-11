@@ -16,5 +16,7 @@ namespace Parikmaherskaya
 
         public string CenaFormat => $"{Cena:N0} ₽";
         public string DlitelnostFormat => $"{Dlitelnost.Hours:D2}ч {Dlitelnost.Minutes:D2}мин";
+        public int CenaSort => Cena;
+        public double DlitelnostSort => Dlitelnost.TotalMinutes;
     }
 }

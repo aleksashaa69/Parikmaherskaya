@@ -5,8 +5,65 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Parikmaherskaya"
         mc:Ignorable="d"
-        Title="SotrudnikiWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Сотрудники салона" Height="750" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="White">
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Сотрудники салона" 
+                   FontSize="36" FontWeight="Bold"
+                   Foreground="#212529"
+                   Margin="0,0,0,20"/>
+
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Поиск:" FontSize="16" FontWeight="Medium"
+                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox x:Name="SearchBox" Grid.Column="1"
+                     FontSize="16" Padding="12,10"
+                     TextChanged="Filter_TextChanged"/>
+
+            <TextBlock Text="Фильтрация:" FontSize="16" FontWeight="Medium"
+                       VerticalAlignment="Center" Margin="40,0,10,0" Grid.Column="2"/>
+            <ComboBox x:Name="DolzhnostFilter" Grid.Column="3"
+                      FontSize="16" Padding="12,10"
+                      SelectionChanged="Filter_TextChanged">
+                <ComboBoxItem Content="Все сотрудники" IsSelected="True"/>
+                <ComboBoxItem Content="Администратор"/>
+                <ComboBoxItem Content="Мастер"/>
+            </ComboBox>
+        </Grid>
+
+        <DataGrid Grid.Row="3"
+                  x:Name="SotrudnikiDataGrid"
+                  ItemsSource="{Binding Sotrudniki}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  RowHeight="65"
+                  FontSize="15">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="№" Binding="{Binding IdSotrudnika}" Width="60"/>
+                <DataGridTextColumn Header="ФИО" Binding="{Binding FIO}" Width="280"/>
+                <DataGridTextColumn Header="Телефон" Binding="{Binding Telefon}" Width="160"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="250"/>
+                <DataGridTextColumn Header="Должность" Binding="{Binding Dolzhnost}" Width="140"/>
+                <DataGridTextColumn Header="Специализация" Binding="{Binding Specializacii}" Width="200"/>
+                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="140"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

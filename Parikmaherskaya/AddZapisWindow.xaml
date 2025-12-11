@@ -1,0 +1,39 @@
+﻿<Window x:Class="Parikmaherskaya.AddZapisWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Parikmaherskaya"
+        mc:Ignorable="d"
+        Title="Новая запись" Height="650" Width="500"
+        WindowStartupLocation="CenterScreen"
+        Background="White">
+    <Grid Margin="30">
+        <StackPanel>
+            <TextBlock Text="Новая запись" FontSize="28" FontWeight="Bold"
+                       HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+            <TextBlock Text="ФИО клиента" FontSize="16" FontWeight="Medium" Margin="0,0,0,5"/>
+            <TextBox x:Name="ClientFIOBox" FontSize="16" Padding="10" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Мастер" FontSize="16" FontWeight="Medium" Margin="0,0,0,5"/>
+            <ComboBox x:Name="MasterComboBox" DisplayMemberPath="FIO" FontSize="16" Padding="10" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Услуга" FontSize="16" FontWeight="Medium" Margin="0,0,0,5"/>
+            <ComboBox x:Name="UslugaComboBox" DisplayMemberPath="Naimenovanie" FontSize="16" Padding="10" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Дата" FontSize="16" FontWeight="Medium" Margin="0,0,0,5"/>
+            <DatePicker x:Name="DatePicker" FontSize="16" Margin="0,0,0,15"/>
+
+            <TextBlock Text="Время (чч:мм)" FontSize="16" FontWeight="Medium" Margin="0,0,0,5"/>
+            <TextBox x:Name="TimeTextBox" Text="10:00" FontSize="16" Padding="10" Margin="0,0,0,30"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Сохранить" Width="150" Height="50" FontSize="18"
+                        Margin="0,0,20,0" Click="Save_Click"/>
+                <Button Content="Отмена" Width="150" Height="50" FontSize="18"
+                        Click="Cancel_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -11,32 +11,86 @@
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Записи клиентов" 
-                   FontSize="36" FontWeight="Bold"
-                   Foreground="#212529"
-                   Margin="0,0,0,30"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <DataGrid Grid.Row="1"
+            <TextBlock Text="Записи клиентов" 
+                       FontSize="36" FontWeight="Bold"
+                       Foreground="#212529"
+                       VerticalAlignment="Center"/>
+
+            <Button Content="+ Добавить запись"
+                    Width="200" Height="50"
+                    FontSize="18" FontWeight="SemiBold"
+                    Click="AddZapis_Click"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,20,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Поиск:" FontSize="16" FontWeight="Medium"
+                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox x:Name="SearchBox" Grid.Column="1"
+                     FontSize="16" Padding="12,10"
+                     TextChanged="Filter_TextChanged"/>
+
+            <TextBlock Text="Статус:" FontSize="16" FontWeight="Medium"
+                       VerticalAlignment="Center" Margin="40,0,10,0" Grid.Column="2"/>
+            <ComboBox x:Name="StatusFilter" Grid.Column="3"
+                      FontSize="16" Padding="12,10"
+                      SelectionChanged="Filter_TextChanged">
+                <ComboBoxItem Content="Все записи" IsSelected="True"/>
+                <ComboBoxItem Content="В ожидании"/>
+                <ComboBoxItem Content="Подтверждена"/>
+                <ComboBoxItem Content="Завершена"/>
+                <ComboBoxItem Content="Неявка"/>
+                <ComboBoxItem Content="Перенесена"/>
+            </ComboBox>
+        </Grid>
+
+        <DataGrid Grid.Row="3"
+                  x:Name="ZapisiDataGrid"
                   ItemsSource="{Binding Zapisi}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   IsReadOnly="True"
                   RowHeight="60"
-                  FontSize="15"
-                  GridLinesVisibility="Horizontal"
-                  HorizontalGridLinesBrush="#EEEEEE">
+                  FontSize="15">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="№" Binding="{Binding IdZapisi}" Width="60"/>
                 <DataGridTextColumn Header="Дата и время" Binding="{Binding DateTimeFormat}" Width="160"/>
-                <DataGridTextColumn Header="Клиент" Binding="{Binding KlientFIO}" Width="220"/>
+                <DataGridTextColumn Header="Клиент" Binding="{Binding KlientFIO}" Width="240"/>
                 <DataGridTextColumn Header="Мастер" Binding="{Binding MasterFIO}" Width="220"/>
                 <DataGridTextColumn Header="Услуга" Binding="{Binding Usluga}" Width="*"/>
-                <DataGridTextColumn Header="Стоимость" Binding="{Binding StoimostFormat}" Width="120"/>
-                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="120"/>
+                <DataGridTextColumn Header="Стоимость" Width="130" SortMemberPath="Stoimost">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="StoimostFormat"/>
+                    </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Setter Property="Margin" Value="0,0,10,0"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="130"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

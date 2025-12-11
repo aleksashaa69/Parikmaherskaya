@@ -20,6 +20,7 @@ namespace Parikmaherskaya
         private readonly string connString =
             "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=22ip22";
 
+        public List<Usluga> AllUslugi { get; set; } = new();
         public List<Usluga> Uslugi { get; set; } = new();
 
         public UslugiWindow()
@@ -39,9 +40,10 @@ namespace Parikmaherskaya
                 using var cmd = new NpgsqlCommand("SELECT id_uslugi, naimenovanie, opisanie, cena, dlitelnost FROM public.usluga ORDER BY id_uslugi", conn);
                 using var reader = cmd.ExecuteReader();
 
+                AllUslugi.Clear();
                 while (reader.Read())
                 {
-                    Uslugi.Add(new Usluga
+                    AllUslugi.Add(new Usluga
                     {
                         IdUslugi = reader.GetInt32(0),
                         Naimenovanie = reader.GetString(1),
@@ -50,12 +52,31 @@ namespace Parikmaherskaya
                         Dlitelnost = reader.GetTimeSpan(4)
                     });
                 }
+
+                Uslugi = new List<Usluga>(AllUslugi);
+                UslugiDataGrid.ItemsSource = Uslugi;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("Ошибка загрузки услуг:\n" + ex.Message, "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Ошибка загрузки услуг:\n" + ex.Message);
             }
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string search = SearchBox.Text.Trim().ToLower();
+            if (string.IsNullOrEmpty(search))
+            {
+                Uslugi = new List<Usluga>(AllUslugi);
+            }
+            else
+            {
+                Uslugi = AllUslugi.Where(u =>
+                    u.Naimenovanie.ToLower().Contains(search) ||
+                    u.Opisanie.ToLower().Contains(search)).ToList();
+            }
+            UslugiDataGrid.ItemsSource = null;
+            UslugiDataGrid.ItemsSource = Uslugi;
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Parikmaherskaya
                     MessageBox.Show($"Добро пожаловать, {login}!",
                         "Успешный вход", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    var mainApp = new MainAppWindow();
+                    var mainApp = new MainAppWindow(login);
                     mainApp.Show();
                     this.Close();
                 }

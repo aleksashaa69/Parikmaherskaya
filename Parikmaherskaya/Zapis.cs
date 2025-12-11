@@ -18,5 +18,6 @@ namespace Parikmaherskaya
 
         public string DateTimeFormat => VremyaData.ToString("dd.MM.yyyy HH:mm");
         public string StoimostFormat => $"{Stoimost:N0} ₽";
+        public int StoimostSort => Stoimost;
     }
 }

@@ -5,8 +5,73 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Parikmaherskaya"
         mc:Ignorable="d"
-        Title="OplataWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Оплата и чеки" Height="750" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="White">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Оплата и чеки"
+                   FontSize="36" FontWeight="Bold"
+                   Foreground="#212529"
+                   Margin="0,0,0,20"/>
+
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="220"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Поиск:" FontSize="16" FontWeight="Medium"
+                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox x:Name="SearchBox" Grid.Column="1"
+                     FontSize="16" Padding="12,10"
+                     TextChanged="Filter_TextChanged"/>
+
+            <TextBlock Text="Фильтрация:" FontSize="16" FontWeight="Medium"
+                       VerticalAlignment="Center" Margin="40,0,10,0" Grid.Column="2"/>
+            <ComboBox x:Name="StatusFilter" Grid.Column="3"
+                      FontSize="16" Padding="12,10"
+                      SelectionChanged="Filter_TextChanged">
+                <ComboBoxItem Content="Все оплаты" IsSelected="True"/>
+                <ComboBoxItem Content="Оплачено"/>
+                <ComboBoxItem Content="Не оплачено"/>
+            </ComboBox>
+        </Grid>
+
+        <DataGrid Grid.Row="2" x:Name="OplataDataGrid"
+                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                  RowHeight="60" FontSize="15">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="№" Binding="{Binding IdOplaty}" Width="60"/>
+                <DataGridTextColumn Header="Дата" Binding="{Binding DataFormat}" Width="110"/>
+                <DataGridTextColumn Header="Клиент" Binding="{Binding KlientFIO}" Width="260"/>
+
+                <DataGridTextColumn Header="Сумма" Width="130" SortMemberPath="Summa">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="SummaFormat"/>
+                    </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Setter Property="Margin" Value="0,0,10,0"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Header="Чек" Binding="{Binding NomerCheka}" Width="140"/>
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="130"/>
+                <DataGridTextColumn Header="Способ" Binding="{Binding Sposob}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

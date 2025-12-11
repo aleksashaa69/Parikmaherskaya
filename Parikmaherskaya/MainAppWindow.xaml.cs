@@ -19,6 +19,13 @@ namespace Parikmaherskaya
         public MainAppWindow()
         {
             InitializeComponent();
+            UserNameTextBlock.Text = "Пользователь: Неизвестно";
+        }
+
+        public MainAppWindow(string login)
+        {
+            InitializeComponent();
+            UserNameTextBlock.Text = $"Пользователь: {login}";
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)

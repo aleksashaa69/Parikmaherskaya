@@ -22,14 +22,54 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Image Source="Resources/Images/logo.png" Width="70" Margin="25,0,15,0" VerticalAlignment="Center"/>
+
                 <TextBlock Text="Магазин кепок — Панель сотрудника"
                            FontSize="26" FontWeight="SemiBold" Foreground="White"
                            VerticalAlignment="Center" Grid.Column="1"/>
-                <Button Content="Выход" Width="110" Height="40" FontSize="16"
-                        Margin="20" Click="ExitButton_Click" Grid.Column="2"/>
+
+                <TextBlock x:Name="UserNameTextBlock"
+                           Text="Пользователь: Загрузка..."
+                           FontSize="16" Foreground="White"
+                           VerticalAlignment="Center"
+                           Margin="20,0" Grid.Column="2"/>
+
+                <Button Content="Выход" 
+                        Width="110" Height="40" FontSize="16"
+                        Margin="20" Click="ExitButton_Click" 
+                        Grid.Column="3"
+                        Background="Transparent"
+                        Foreground="White"
+                        BorderBrush="White"
+                        BorderThickness="2"
+                        Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FFFFFF"/>
+                                    <Setter Property="Foreground" Value="#D4AF37"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
         </Border>
 
@@ -38,8 +78,7 @@
                        FontSize="34" FontWeight="Bold"
                        HorizontalAlignment="Center"
                        Margin="0,30,0,30"/>
-
-            <Button Content="Каталог кепок" Height="75" FontSize="20"
+            <Button Content="Каталог услуг" Height="75" FontSize="20"
                     Click="ShowUslugi_Click" Margin="0,12"/>
             <Button Content="Записи клиентов" Height="75" FontSize="20"
                     Click="ShowZapisi_Click" Margin="0,12"/>
