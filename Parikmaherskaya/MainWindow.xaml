@@ -5,9 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Parikmaherskaya"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Content="Проверить подключение" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click"/>
-        <TextBlock x:Name="ConnectionStatus" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20" FontSize="16"/>
+        Title="Магазин кепок — вход" Height="900" Width="650"
+        WindowStartupLocation="CenterScreen"
+        Background="White">
+
+    <Grid Margin="30">
+        <StackPanel HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Width="380">
+
+            <Image Source="Resources/Images/logo.png" 
+                   Style="{StaticResource LogoStyle}"
+                   MaxWidth="220"
+                   Margin="0,0,0,30"/>
+
+            <TextBlock Text="Магазин кепок" 
+                       FontSize="38" 
+                       FontWeight="Bold"
+                       Foreground="#212529"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <TextBlock Text="Вход для сотрудников" 
+                       FontSize="19"
+                       Foreground="#555555"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,50"/>
+
+            <TextBlock Text="Логин" FontSize="14" FontWeight="Medium" Margin="0,0,0,5"/>
+            <TextBox x:Name="LoginTextBox" Padding="14,12" Margin="0,0,0,18"/>
+
+            <TextBlock Text="Пароль" FontSize="14" FontWeight="Medium" Margin="0,0,0,5"/>
+            <PasswordBox x:Name="PasswordBox" Padding="14,12" Margin="0,0,0,40"/>
+
+            <Button Content="Войти в систему"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Padding="20,14"
+                    Click="LoginButton_Click"/>
+
+            <TextBlock Text="© 2025 Магазин кепок. Все права защищены."
+                       FontSize="11"
+                       Foreground="#AAAAAA"
+                       HorizontalAlignment="Center"
+                       Margin="0,60,0,0"/>
+
+        </StackPanel>
     </Grid>
 </Window>

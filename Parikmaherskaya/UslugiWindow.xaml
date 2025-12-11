@@ -1,0 +1,46 @@
+﻿<Window x:Class="Parikmaherskaya.UslugiWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Parikmaherskaya"
+        mc:Ignorable="d"
+        Title="Каталог услуг" Height="750" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="White">
+    <Grid>
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <TextBlock Text="Каталог услуг" 
+                   FontSize="36" FontWeight="Bold"
+                   Foreground="#212529"
+                   Margin="0,0,0,30"
+                   Grid.Row="0"/>
+
+            <!-- Таблица услуг -->
+            <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Uslugi}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  RowHeight="55"
+                  FontSize="15"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="#EEEEEE">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="№" Binding="{Binding IdUslugi}" Width="60"/>
+                    <DataGridTextColumn Header="Услуга" Binding="{Binding Naimenovanie}" Width="2*"/>
+                    <DataGridTextColumn Header="Описание" Binding="{Binding Opisanie}" Width="3*"/>
+                    <DataGridTextColumn Header="Цена" Binding="{Binding CenaFormat}" Width="120"/>
+                    <DataGridTextColumn Header="Длительность" Binding="{Binding DlitelnostFormat}" Width="140"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>

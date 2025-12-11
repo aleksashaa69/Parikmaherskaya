@@ -14,26 +14,60 @@ namespace Parikmaherskaya
 {
     public partial class MainWindow : Window
     {
+        private readonly string connectionString =
+            "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=22ip22";
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            string connectionString = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=22ip22";
+            string login = LoginTextBox.Text.Trim();
+            string password = PasswordBox.Password;
+
+            if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show("Введите логин и пароль", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             try
             {
-                using (var conn = new NpgsqlConnection(connectionString))
+                using var conn = new NpgsqlConnection(connectionString);
+                conn.Open();
+
+                using var cmd = new NpgsqlCommand(
+                    @"SELECT COUNT(*) 
+                      FROM public.avtoryzaciya 
+                      WHERE login = @login AND parol = @parol", conn);
+
+                cmd.Parameters.AddWithValue("login", login);
+                cmd.Parameters.AddWithValue("parol", password);
+
+                long count = Convert.ToInt64(cmd.ExecuteScalar());
+
+                if (count == 1)
                 {
-                    conn.Open();
-                    ConnectionStatus.Text = "Подключено успешно! Версия PostgreSQL: " + conn.PostgreSqlVersion;
+                    MessageBox.Show($"Добро пожаловать, {login}!",
+                        "Успешный вход", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    var mainApp = new MainAppWindow();
+                    mainApp.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Неверный логин или пароль", "Ошибка входа",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                ConnectionStatus.Text = "Ошибка подключения: " + ex.Message;
+                MessageBox.Show("Ошибка подключения к базе данных:\n" + ex.Message,
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

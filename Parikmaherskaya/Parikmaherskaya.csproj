@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="Resources\Icons\app.ico" />
+    <None Remove="Resources\Images\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,9 @@
 
   <ItemGroup>
     <Resource Include="Resources\Icons\app.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\logo.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
