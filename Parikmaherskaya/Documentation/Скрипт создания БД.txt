@@ -1,0 +1,334 @@
+-- Table: public.avtoryzaciya
+
+-- DROP TABLE IF EXISTS public.avtoryzaciya;
+
+CREATE TABLE IF NOT EXISTS public.avtoryzaciya
+(
+    id_avtoryzaciyi integer NOT NULL,
+    login character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    parol character varying(12) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT avtoryzaciya_pkey PRIMARY KEY (id_avtoryzaciyi)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.avtoryzaciya
+    OWNER to "22ip22";
+
+
+-- Table: public.dolzhnost
+
+-- DROP TABLE IF EXISTS public.dolzhnost;
+
+CREATE TABLE IF NOT EXISTS public.dolzhnost
+(
+    id_dolzhnosti integer NOT NULL,
+    naimenovanie character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT dolzhnost_pkey PRIMARY KEY (id_dolzhnosti)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.dolzhnost
+    OWNER to "22ip22";
+
+
+-- Table: public.klient
+
+-- DROP TABLE IF EXISTS public.klient;
+
+CREATE TABLE IF NOT EXISTS public.klient
+(
+    id_klienta integer NOT NULL,
+    familiya character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    imya character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    otchestvo character varying(150) COLLATE pg_catalog."default",
+    telefon character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    el_pochta character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT klient_pkey PRIMARY KEY (id_klienta)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.klient
+    OWNER to "22ip22";
+
+
+-- Table: public.master_specializaciya
+
+-- DROP TABLE IF EXISTS public.master_specializaciya;
+
+CREATE TABLE IF NOT EXISTS public.master_specializaciya
+(
+    id_mastera_specializaciyi integer NOT NULL,
+    id_sotrudnika integer NOT NULL,
+    id_specializaciyi integer NOT NULL,
+    CONSTRAINT master_specializaciya_pkey PRIMARY KEY (id_mastera_specializaciyi),
+    CONSTRAINT id_sotrudnika FOREIGN KEY (id_sotrudnika)
+        REFERENCES public.sotrudnik (id_sotrudnika) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_specializaciyi FOREIGN KEY (id_specializaciyi)
+        REFERENCES public.specializaciya (id_specializaciyi) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.master_specializaciya
+    OWNER to "22ip22";
+
+
+-- Table: public.master_usluga
+
+-- DROP TABLE IF EXISTS public.master_usluga;
+
+CREATE TABLE IF NOT EXISTS public.master_usluga
+(
+    id_mastera_uslugi integer NOT NULL,
+    id_sotrudnika integer NOT NULL,
+    id_uslugi integer NOT NULL,
+    CONSTRAINT master_usluga_pkey PRIMARY KEY (id_mastera_uslugi),
+    CONSTRAINT id_sotrudnika FOREIGN KEY (id_sotrudnika)
+        REFERENCES public.sotrudnik (id_sotrudnika) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_uslugi FOREIGN KEY (id_uslugi)
+        REFERENCES public.usluga (id_uslugi) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.master_usluga
+    OWNER to "22ip22";
+
+
+-- Table: public.oplata
+
+-- DROP TABLE IF EXISTS public.oplata;
+
+CREATE TABLE IF NOT EXISTS public.oplata
+(
+    id_oplaty integer NOT NULL,
+    summa integer NOT NULL,
+    data date NOT NULL,
+    nomer_cheka character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    id_zapisi integer NOT NULL,
+    id_statusa_oplaty integer NOT NULL,
+    id_sposoba_oplaty integer NOT NULL,
+    CONSTRAINT oplata_pkey PRIMARY KEY (id_oplaty),
+    CONSTRAINT id_sposoba_oplaty FOREIGN KEY (id_sposoba_oplaty)
+        REFERENCES public.sposob_oplaty (id_sposoba_oplaty) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_statusa_oplaty FOREIGN KEY (id_statusa_oplaty)
+        REFERENCES public.status_oplaty (id_statusa_oplaty) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_zapisi FOREIGN KEY (id_zapisi)
+        REFERENCES public.zapis (id_zapisi) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.oplata
+    OWNER to "22ip22";
+
+
+-- Table: public.sotrudnik
+
+-- DROP TABLE IF EXISTS public.sotrudnik;
+
+CREATE TABLE IF NOT EXISTS public.sotrudnik
+(
+    id_sotrudnika integer NOT NULL,
+    familiya character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    imya character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    otchestvo character varying(150) COLLATE pg_catalog."default",
+    telefon character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    el_pochta character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    id_dolzhnosti integer NOT NULL,
+    id_avtorizatciyi integer NOT NULL,
+    CONSTRAINT sotrudnik_pkey PRIMARY KEY (id_sotrudnika),
+    CONSTRAINT id_avtorizaciyi FOREIGN KEY (id_avtorizatciyi)
+        REFERENCES public.avtoryzaciya (id_avtoryzaciyi) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_dolzhnosti FOREIGN KEY (id_dolzhnosti)
+        REFERENCES public.dolzhnost (id_dolzhnosti) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.sotrudnik
+    OWNER to "22ip22";
+
+
+-- Table: public.specializaciya
+
+-- DROP TABLE IF EXISTS public.specializaciya;
+
+CREATE TABLE IF NOT EXISTS public.specializaciya
+(
+    id_specializaciyi integer NOT NULL,
+    naimenovanie character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    opisanie character varying(500) COLLATE pg_catalog."default",
+    CONSTRAINT specializaciya_pkey PRIMARY KEY (id_specializaciyi)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.specializaciya
+    OWNER to "22ip22";
+
+
+-- Table: public.sposob_oplaty
+
+-- DROP TABLE IF EXISTS public.sposob_oplaty;
+
+CREATE TABLE IF NOT EXISTS public.sposob_oplaty
+(
+    id_sposoba_oplaty integer NOT NULL,
+    naimenovanie character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    opisanie character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT sposob_oplaty_pkey PRIMARY KEY (id_sposoba_oplaty)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.sposob_oplaty
+    OWNER to "22ip22";
+
+
+-- Table: public.status_oplaty
+
+-- DROP TABLE IF EXISTS public.status_oplaty;
+
+CREATE TABLE IF NOT EXISTS public.status_oplaty
+(
+    id_statusa_oplaty integer NOT NULL,
+    naimenovanie character varying COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT status_oplaty_pkey PRIMARY KEY (id_statusa_oplaty)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.status_oplaty
+    OWNER to "22ip22";
+
+
+-- Table: public.status_zapisi
+
+-- DROP TABLE IF EXISTS public.status_zapisi;
+
+CREATE TABLE IF NOT EXISTS public.status_zapisi
+(
+    id_statusa_zapisi integer NOT NULL,
+    naimenovanie character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT status_zapisi_pkey PRIMARY KEY (id_statusa_zapisi)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.status_zapisi
+    OWNER to "22ip22";
+
+
+-- Table: public.usluga
+
+-- DROP TABLE IF EXISTS public.usluga;
+
+CREATE TABLE IF NOT EXISTS public.usluga
+(
+    id_uslugi integer NOT NULL,
+    naimenovanie character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    opisanie character varying(500) COLLATE pg_catalog."default" NOT NULL,
+    cena integer NOT NULL,
+    dlitelnost time without time zone NOT NULL,
+    CONSTRAINT usluga_pkey PRIMARY KEY (id_uslugi)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.usluga
+    OWNER to "22ip22";
+
+
+-- Table: public.zapis
+
+-- DROP TABLE IF EXISTS public.zapis;
+
+CREATE TABLE IF NOT EXISTS public.zapis
+(
+    id_zapisi integer NOT NULL,
+    vremya_data timestamp without time zone NOT NULL,
+    obshaya_stoimost integer NOT NULL,
+    id_klienta integer NOT NULL,
+    id_sotrudnika integer NOT NULL,
+    id_statusa_zapisi integer NOT NULL,
+    CONSTRAINT zapis_pkey PRIMARY KEY (id_zapisi),
+    CONSTRAINT id_klienta FOREIGN KEY (id_klienta)
+        REFERENCES public.klient (id_klienta) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_sotrudnika FOREIGN KEY (id_sotrudnika)
+        REFERENCES public.sotrudnik (id_sotrudnika) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_statusa_zapisi FOREIGN KEY (id_statusa_zapisi)
+        REFERENCES public.status_zapisi (id_statusa_zapisi) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.zapis
+    OWNER to "22ip22";
+
+
+-- Table: public.zapis_usluga
+
+-- DROP TABLE IF EXISTS public.zapis_usluga;
+
+CREATE TABLE IF NOT EXISTS public.zapis_usluga
+(
+    id_zapisi_uslugi integer NOT NULL,
+    id_zapisi integer NOT NULL,
+    id_uslugi integer NOT NULL,
+    CONSTRAINT zapis_usluga_pkey PRIMARY KEY (id_zapisi_uslugi),
+    CONSTRAINT id_uslugi FOREIGN KEY (id_uslugi)
+        REFERENCES public.usluga (id_uslugi) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT id_zapisi FOREIGN KEY (id_zapisi)
+        REFERENCES public.zapis (id_zapisi) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.zapis_usluga
+    OWNER to "22ip22";
