@@ -122,5 +122,74 @@ namespace Parikmaherskaya
                 Filter_TextChanged(sender, e);
             }
         }
+
+        private void EditZapis_Click(object sender, RoutedEventArgs e)
+        {
+            if (ZapisiDataGrid.SelectedItem is ZapisView selectedZapis)
+            {
+                var editWindow = new EditZapisWindow(selectedZapis);
+                if (editWindow.ShowDialog() == true)
+                {
+                    LoadZapisi();
+                    Filter_TextChanged(sender, e);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите запись для редактирования", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void DeleteZapis_Click(object sender, RoutedEventArgs e)
+        {
+            if (ZapisiDataGrid.SelectedItem is ZapisView selectedZapis)
+            {
+                var result = MessageBox.Show(
+                    $"Удалить запись №{selectedZapis.IdZapisi} от {selectedZapis.DateTimeFormat}?\nКлиент: {selectedZapis.KlientFIO}\nЭто действие нельзя отменить!",
+                    "Подтверждение удаления",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        using var conn = new NpgsqlConnection(connString);
+                        conn.Open();
+                        using var trans = conn.BeginTransaction();
+
+                        using var deleteOplataCmd = new NpgsqlCommand(
+                            "DELETE FROM public.oplata WHERE id_zapisi = @id", conn, trans);
+                        deleteOplataCmd.Parameters.AddWithValue("id", selectedZapis.IdZapisi);
+                        deleteOplataCmd.ExecuteNonQuery();
+
+                        using var deleteLinkCmd = new NpgsqlCommand(
+                            "DELETE FROM public.zapis_usluga WHERE id_zapisi = @id", conn, trans);
+                        deleteLinkCmd.Parameters.AddWithValue("id", selectedZapis.IdZapisi);
+                        deleteLinkCmd.ExecuteNonQuery();
+
+                        using var deleteZapisCmd = new NpgsqlCommand(
+                            "DELETE FROM public.zapis WHERE id_zapisi = @id", conn, trans);
+                        deleteZapisCmd.Parameters.AddWithValue("id", selectedZapis.IdZapisi);
+                        deleteZapisCmd.ExecuteNonQuery();
+
+                        trans.Commit();
+
+                        MessageBox.Show("Запись успешно удалена!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        LoadZapisi();
+                        Filter_TextChanged(sender, e);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка при удалении:\n" + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите запись для удаления", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
     }
 }

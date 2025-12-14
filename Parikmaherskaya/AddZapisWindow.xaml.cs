@@ -33,22 +33,22 @@ namespace Parikmaherskaya
                 conn.Open();
 
                 using var cmd = new NpgsqlCommand(
-                    @"SELECT id_sotrudnika, familiya || ' ' || imya || COALESCE(' ' || otchestvo, '') as fio 
-                      FROM public.sotrudnik 
-                      WHERE id_dolzhnosti = 2 
-                      ORDER BY familiya", conn);
-                using var r = cmd.ExecuteReader();
-                while (r.Read())
+                    "SELECT id_sotrudnika, familiya || ' ' || imya || COALESCE(' ' || otchestvo, '') AS fio " +
+                    "FROM public.sotrudnik " +
+                    "WHERE id_dolzhnosti = 2 " +
+                    "ORDER BY familiya", conn);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    MasterComboBox.Items.Add(new { Id = r.GetInt32(0), FIO = r.GetString(1) });
+                    MasterComboBox.Items.Add(new { Id = reader.GetInt32(0), FIO = reader.GetString(1) });
                 }
-                r.Close();
+                reader.Close();
 
-                using var cmd2 = new NpgsqlCommand("SELECT id_uslugi, naimenovanie, cena FROM public.usluga ORDER BY naimenovanie", conn);
-                using var r2 = cmd2.ExecuteReader();
-                while (r2.Read())
+                using var cmd2 = new NpgsqlCommand("SELECT id_uslugi, naimenovanie FROM public.usluga ORDER BY naimenovanie", conn);
+                using var reader2 = cmd2.ExecuteReader();
+                while (reader2.Read())
                 {
-                    UslugaComboBox.Items.Add(new { Id = r2.GetInt32(0), Naimenovanie = r2.GetString(1), Cena = r2.GetInt32(2) });
+                    UslugaComboBox.Items.Add(new { Id = reader2.GetInt32(0), Naimenovanie = reader2.GetString(1) });
                 }
             }
             catch (Exception ex)
@@ -59,13 +59,14 @@ namespace Parikmaherskaya
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(ClientFIOBox.Text) ||
+            if (string.IsNullOrWhiteSpace(FamiliyaBox.Text) ||
+                string.IsNullOrWhiteSpace(ImyaBox.Text) ||
                 MasterComboBox.SelectedItem == null ||
                 UslugaComboBox.SelectedItem == null ||
                 DatePicker.SelectedDate == null ||
-                !TimeSpan.TryParse(TimeTextBox.Text, out TimeSpan time))
+                !TimeSpan.TryParse(TimeBox.Text, out TimeSpan time))
             {
-                MessageBox.Show("Заполните все поля корректно!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Заполните все обязательные поля правильно!", "Ошибка");
                 return;
             }
 
@@ -73,45 +74,60 @@ namespace Parikmaherskaya
             {
                 using var conn = new NpgsqlConnection(connString);
                 conn.Open();
-                using var transaction = conn.BeginTransaction();
+                using var trans = conn.BeginTransaction();
 
                 var clientCmd = new NpgsqlCommand(
                     @"INSERT INTO public.klient (familiya, imya, otchestvo, telefon, el_pochta)
-                      VALUES (@fio, '', NULL, '+7 (000) 000-00-00', 'temp@mail.ru')
-                      RETURNING id_klienta", conn, transaction);
-                clientCmd.Parameters.AddWithValue("fio", ClientFIOBox.Text.Trim());
-                int klientId = (int)clientCmd.ExecuteScalar()!;
+                      VALUES (@fam, @imya, @otch, @tel, @email)
+                      RETURNING id_klienta", conn, trans);
+
+                clientCmd.Parameters.AddWithValue("fam", FamiliyaBox.Text.Trim());
+                clientCmd.Parameters.AddWithValue("imya", ImyaBox.Text.Trim());
+                clientCmd.Parameters.AddWithValue("otch", string.IsNullOrWhiteSpace(OtchestvoBox.Text) ? (object)DBNull.Value : OtchestvoBox.Text.Trim());
+                clientCmd.Parameters.AddWithValue("tel", string.IsNullOrWhiteSpace(TelefonBox.Text) ? "+7 (000) 000-00-00" : TelefonBox.Text.Trim());
+                clientCmd.Parameters.AddWithValue("email", string.IsNullOrWhiteSpace(EmailBox.Text) ? "no@email.ru" : EmailBox.Text.Trim());
+
+                int klientId = (int)clientCmd.ExecuteScalar();
+
+                dynamic usluga = UslugaComboBox.SelectedItem;
+                int cena = GetUslugaCena(usluga.Id, conn);
 
                 DateTime dateTime = DatePicker.SelectedDate.Value.Date + time;
-                dynamic usluga = UslugaComboBox.SelectedItem;
-                int cena = usluga.Cena;
 
                 var zapisCmd = new NpgsqlCommand(
-                    @"INSERT INTO public.zapis 
-                      (vremya_data, obshaya_stoimost, id_klienta, id_sotrudnika, id_statusa_zapisi)
+                    @"INSERT INTO public.zapis (vremya_data, obshaya_stoimost, id_klienta, id_sotrudnika, id_statusa_zapisi)
                       VALUES (@dt, @cost, @klient, @master, 1)
-                      RETURNING id_zapisi", conn, transaction);
+                      RETURNING id_zapisi", conn, trans);
+
                 zapisCmd.Parameters.AddWithValue("dt", dateTime);
                 zapisCmd.Parameters.AddWithValue("cost", cena);
                 zapisCmd.Parameters.AddWithValue("klient", klientId);
                 zapisCmd.Parameters.AddWithValue("master", ((dynamic)MasterComboBox.SelectedItem).Id);
-                int zapisId = (int)zapisCmd.ExecuteScalar()!;
+
+                int zapisId = (int)zapisCmd.ExecuteScalar();
 
                 var linkCmd = new NpgsqlCommand(
-                    "INSERT INTO public.zapis_usluga (id_zapisi, id_uslugi) VALUES (@z, @u)", conn, transaction);
+                    "INSERT INTO public.zapis_usluga (id_zapisi, id_uslugi) VALUES (@z, @u)", conn, trans);
                 linkCmd.Parameters.AddWithValue("z", zapisId);
                 linkCmd.Parameters.AddWithValue("u", usluga.Id);
                 linkCmd.ExecuteNonQuery();
 
-                transaction.Commit();
+                trans.Commit();
 
-                MessageBox.Show("Запись успешно создана!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Запись успешно создана!", "Успех");
                 DialogResult = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при создании записи:\n" + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Ошибка: " + ex.Message);
             }
+        }
+
+        private int GetUslugaCena(int uslugaId, NpgsqlConnection conn)
+        {
+            var cmd = new NpgsqlCommand("SELECT cena FROM public.usluga WHERE id_uslugi = @id", conn);
+            cmd.Parameters.AddWithValue("id", uslugaId);
+            return Convert.ToInt32(cmd.ExecuteScalar());
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

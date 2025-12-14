@@ -20,9 +20,11 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Записи клиентов" 
+            <TextBlock Text="Записи клиентов"
                        FontSize="36" FontWeight="Bold"
                        Foreground="#212529"
                        VerticalAlignment="Center"/>
@@ -32,7 +34,22 @@
                     FontSize="18" FontWeight="SemiBold"
                     Click="AddZapis_Click"
                     Grid.Column="1"
-                    HorizontalAlignment="Right"/>
+                    Margin="0,0,10,0"/>
+
+            <Button Content="Редактировать"
+                    Width="160" Height="50"
+                    FontSize="18"
+                    Click="EditZapis_Click"
+                    Grid.Column="2"
+                    Margin="0,0,10,0"
+                    IsEnabled="{Binding ElementName=ZapisiDataGrid, Path=SelectedItem, Mode=OneWay}"/>
+
+            <Button Content="Удалить"
+                    Width="140" Height="50"
+                    FontSize="18" Background="#DC3545" Foreground="White"
+                    Click="DeleteZapis_Click"
+                    Grid.Column="3"
+                    IsEnabled="{Binding ElementName=ZapisiDataGrid, Path=SelectedItem, Mode=OneWay}"/>
         </Grid>
 
         <Grid Grid.Row="1" Margin="0,20,0,20">
@@ -71,7 +88,6 @@
                   IsReadOnly="True"
                   RowHeight="60"
                   FontSize="15">
-
             <DataGrid.Columns>
                 <DataGridTextColumn Header="№" Binding="{Binding IdZapisi}" Width="60"/>
                 <DataGridTextColumn Header="Дата и время" Binding="{Binding DateTimeFormat}" Width="160"/>
