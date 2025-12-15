@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Parikmaherskaya"
         mc:Ignorable="d"
-        Title="Магазин кепок — Панель сотрудника" Height="750" Width="1100"
+        Title="Парикмахерская Магазин кепок — Панель сотрудника" Height="800" Width="1100"
         WindowStartupLocation="CenterScreen"
         Background="White">
 
@@ -26,20 +26,18 @@
                 </Grid.ColumnDefinitions>
 
                 <Image Source="Resources/Images/logo.png" Width="70" Margin="25,0,15,0" VerticalAlignment="Center"/>
-
                 <TextBlock Text="Магазин кепок — Панель сотрудника"
                            FontSize="26" FontWeight="SemiBold" Foreground="White"
                            VerticalAlignment="Center" Grid.Column="1"/>
-
                 <TextBlock x:Name="UserNameTextBlock"
                            Text="Пользователь: Загрузка..."
                            FontSize="16" Foreground="White"
                            VerticalAlignment="Center"
                            Margin="20,0" Grid.Column="2"/>
 
-                <Button Content="Выход" 
+                <Button Content="Выход"
                         Width="110" Height="40" FontSize="16"
-                        Margin="20" Click="ExitButton_Click" 
+                        Margin="20" Click="ExitButton_Click"
                         Grid.Column="3"
                         Background="Transparent"
                         Foreground="White"
@@ -78,6 +76,7 @@
                        FontSize="34" FontWeight="Bold"
                        HorizontalAlignment="Center"
                        Margin="0,30,0,30"/>
+
             <Button Content="Каталог услуг" Height="75" FontSize="20"
                     Click="ShowUslugi_Click" Margin="0,12"/>
             <Button Content="Записи клиентов" Height="75" FontSize="20"
@@ -86,6 +85,9 @@
                     Click="ShowSotrudniki_Click" Margin="0,12"/>
             <Button Content="Оплата и чеки" Height="75" FontSize="20"
                     Click="ShowOplata_Click" Margin="0,12"/>
+            <Button Content="Отчёты"
+                    Height="75" FontSize="20"
+                    Click="ShowReports_Click" Margin="0,12"/>
         </StackPanel>
 
         <Border Background="#F8F9FA" Grid.Row="2">

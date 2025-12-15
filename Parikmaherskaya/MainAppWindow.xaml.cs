@@ -54,5 +54,11 @@ namespace Parikmaherskaya
         {
             new OplataWindow().ShowDialog();
         }
+
+        private void ShowReports_Click(object sender, RoutedEventArgs e)
+        {
+            var generator = new ReportGenerator();
+            generator.GenerateReport();
+        }
     }
 }
